@@ -9,7 +9,7 @@ from tensorflow.keras.models import load_model
 import traceback
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app)
 
 # 事前に学習した年齢予測モデルの読み込み
 model = load_model('api/age_model_0716_2.h5')
@@ -57,10 +57,9 @@ def extract_faces(image, padding=100):
 
     # 顔が検出されたか確認
     if len(faces) == 0:
-        return face_list
+        face_list.append(image)
 
     # 検出された顔部分を切り出してリストに追加
-
     for (x, y, w, h) in faces:
         # 顔の周りに余白を追加
         x1 = max(0, x - padding)
@@ -72,7 +71,6 @@ def extract_faces(image, padding=100):
         face_list.append(face)
 
     return face_list
-
 
 @app.route('/faceage', methods=['POST'])
 def upload_image():
@@ -90,13 +88,19 @@ def upload_image():
         image_data = data['image'].split(",")[1]
         image_bytes = base64.b64decode(image_data)
         image = Image.open(io.BytesIO(image_bytes))
+        d = "ノーマル"
 
         # 画像を加工して年齢を予測
-        images = extract_faces(image)[0]
+        images = extract_faces(image)
+        if len(images) > 1:
+            d = "opencv"
+            images = images[1]
+        else:
+            images = images[0]
         predicted_age = predict_age(images)
 
         # 加工した画像をバイトストリームに変換
-        processed_image = image.convert("L")  # グレースケールに変換などの加工
+        processed_image = Image.fromarray(images)  # Numpy配列をPILのImageに変換
         image_io = io.BytesIO()
         processed_image.save(image_io, 'JPEG')
         image_io.seek(0)
@@ -106,7 +110,7 @@ def upload_image():
         response_data = {
             "image": f"data:image/jpeg;base64,{processed_image_base64}",
             "predicted_age": predicted_age,
-            "message": "Image processed successfully"
+            "message": d
         }
 
         return jsonify(response_data)

@@ -39,13 +39,13 @@ def predict_age(image, target_size=(64, 64)):
 
     return predicted_age_label
 
-def extract_faces(image_path, padding=100):
+def extract_faces(image, padding=100):
     # 顔検出器の読み込み
-    cascade_path = cv2.data.haarcascades + 'api/haarcascade_frontalface_default.xml'
+    cascade_path = cv2.data.haarcascades + './haarcascade_frontalface_default.xml'
     face_cascade = cv2.CascadeClassifier(cascade_path)
 
     # 画像の読み込み
-    image = np.array(image_path)
+    image = np.array(image)
 
     # グレースケールに変換
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -53,12 +53,14 @@ def extract_faces(image_path, padding=100):
     # 顔の検出
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
+    face_list = []
+
     # 顔が検出されたか確認
     if len(faces) == 0:
-        return []
+        return face_list
 
     # 検出された顔部分を切り出してリストに追加
-    face_list = []
+
     for (x, y, w, h) in faces:
         # 顔の周りに余白を追加
         x1 = max(0, x - padding)
@@ -89,16 +91,9 @@ def upload_image():
         image_bytes = base64.b64decode(image_data)
         image = Image.open(io.BytesIO(image_bytes))
 
-        # 顔を複数検出した場合は、一番年上を返す
-        face_list = extract_faces(image)
-        if len(face_list) == 0:
-            predicted_age = predict_age(image)
-        else:
-            predicted_age = 0
-            for face in face_list:
-                p_age = predicted_age(face)
-                if predicted_age < p_age:
-                    predicted_age = p_age
+        # 画像を加工して年齢を予測
+        images = extract_faces(image)[0]
+        predicted_age = predict_age(images)
 
         # 加工した画像をバイトストリームに変換
         processed_image = image.convert("L")  # グレースケールに変換などの加工

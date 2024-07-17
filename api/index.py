@@ -15,7 +15,7 @@ CORS(app)
 model = load_model('api/age_model_0716_2.h5')
 
 # 年齢ラベル
-age_ranges = ['0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90+']
+age_ranges = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
 
 def predict_age(image, target_size=(64, 64)):
     # PILのImageオブジェクトをnumpy配列に変換
@@ -39,6 +39,39 @@ def predict_age(image, target_size=(64, 64)):
 
     return predicted_age_label
 
+def extract_faces(image_path, padding=100):
+    # 顔検出器の読み込み
+    cascade_path = cv2.data.haarcascades + 'api/haarcascade_frontalface_default.xml'
+    face_cascade = cv2.CascadeClassifier(cascade_path)
+
+    # 画像の読み込み
+    image = np.array(image_path)
+
+    # グレースケールに変換
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # 顔の検出
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+    # 顔が検出されたか確認
+    if len(faces) == 0:
+        return []
+
+    # 検出された顔部分を切り出してリストに追加
+    face_list = []
+    for (x, y, w, h) in faces:
+        # 顔の周りに余白を追加
+        x1 = max(0, x - padding)
+        y1 = max(0, y - padding)
+        x2 = min(image.shape[1], x + w + padding)
+        y2 = min(image.shape[0], y + h + padding)
+
+        face = image[y1:y2, x1:x2]
+        face_list.append(face)
+
+    return face_list
+
+
 @app.route('/faceage', methods=['POST'])
 def upload_image():
     try:
@@ -57,7 +90,15 @@ def upload_image():
         image = Image.open(io.BytesIO(image_bytes))
 
         # 画像を加工して年齢を予測
-        predicted_age = predict_age(image)
+        face_list = extract_faces(image)
+        if len(face_list) == 0:
+            predicted_age = predict_age(image)
+        else:
+            predicted_age = 0
+            for face in face_list:
+                p_age = predicted_age(face)
+                if predicted_age < p_age:
+                    predicted_age = p_age
 
         # 加工した画像をバイトストリームに変換
         processed_image = image.convert("L")  # グレースケールに変換などの加工

@@ -5,3 +5,7 @@
 [build.environment]
   NETLIFY_USE_YARN = "false"
   NPM_FLAGS = "--no-optional"
+  
+[context.production.environment]
+  NODE_VERSION = "14"
+  PNPM_VERSION = "6.14.8"

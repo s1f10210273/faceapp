@@ -89,7 +89,7 @@ def upload_image():
         image_bytes = base64.b64decode(image_data)
         image = Image.open(io.BytesIO(image_bytes))
 
-        # 画像を加工して年齢を予測
+        # 顔を複数検出した場合は、一番年上を返す
         face_list = extract_faces(image)
         if len(face_list) == 0:
             predicted_age = predict_age(image)

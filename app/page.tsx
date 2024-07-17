@@ -1,36 +1,17 @@
 "use client"
 
 import React, { useRef, useState } from 'react';
+import Webcam from 'react-webcam';
 
 const Home = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const webcamRef = useRef<any>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [responseData, setResponseData] = useState<{ image: string, message: string } | null>(null);
 
-  const startVideo = () => {
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.play();
-        }
-      })
-      .catch(err => {
-        console.error("Error accessing webcam: ", err);
-      });
-  };
-
   const captureImage = () => {
-    if (videoRef.current && canvasRef.current) {
-      const context = canvasRef.current.getContext('2d');
-      if (context) {
-        canvasRef.current.width = videoRef.current.videoWidth;
-        canvasRef.current.height = videoRef.current.videoHeight;
-        context.drawImage(videoRef.current, 0, 0);
-        const dataUrl = canvasRef.current.toDataURL('image/jpeg');
-        setImageSrc(dataUrl);
-      }
+    const imageSrc = webcamRef.current?.getScreenshot();
+    if (imageSrc) {
+      setImageSrc(imageSrc);
     }
   };
 
@@ -46,7 +27,6 @@ const Home = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         setResponseData(data);
       } else {
         console.error('Error uploading image');
@@ -55,24 +35,32 @@ const Home = () => {
   };
 
   return (
-    <div>
-      <h1>Webcam Capture</h1>
-      <button onClick={startVideo}>Start Webcam</button>
-      <video ref={videoRef} style={{ display: 'block', margin: '20px 0' }}></video>
-      <button onClick={captureImage}>Capture Image</button>
-      <button onClick={sendImage}>Send Image</button>
-      <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
+    <div className="max-w-3xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-4">Webcam Capture</h1>
+      <div className="flex space-x-4 mb-4">
+        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" onClick={captureImage}>Capture Image</button>
+        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" onClick={sendImage}>Send Image</button>
+      </div>
+      <div className="rounded-lg">
+        <Webcam
+          audio={false}
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+          width={640}
+          height={480}
+        />
+      </div>
       {imageSrc && (
-        <div>
-          <h2>Captured Image</h2>
-          <img src={imageSrc} alt="Captured" style={{ display: 'block', margin: '20px 0' }} />
+        <div className="flex flex-col items-center mt-4">
+          <h2 className="text-xl font-bold mb-2">Captured Image</h2>
+          <img src={imageSrc} alt="Captured" className="max-w-md rounded-lg" />
         </div>
       )}
       {responseData && (
-        <div>
-          <h2>Processed Image</h2>
-          <img src={responseData.image} alt="Processed" style={{ display: 'block', margin: '20px 0' }} />
-          <p>{responseData.message}</p>
+        <div className="flex flex-col items-center mt-4">
+          <h2 className="text-xl font-bold mb-2">Processed Image</h2>
+          <img src={responseData.image} alt="Processed" className="max-w-md rounded-lg" />
+          <p className="mt-2">{responseData.message}</p>
         </div>
       )}
     </div>

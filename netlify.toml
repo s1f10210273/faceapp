@@ -1,7 +1,7 @@
 [build]
   command = "npm run build"
   publish = "build"
-  environment = { NETLIFY_USE_YARN = "false" }
 
 [build.environment]
+  NETLIFY_USE_YARN = "false"
   NPM_FLAGS = "--no-optional"

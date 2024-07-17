@@ -17,7 +17,7 @@ const Home = () => {
 
   const sendImage = async () => {
     if (imageSrc) {
-      const response = await fetch('http://127.0.0.1:5328/upload', {
+      const response = await fetch('http://127.0.0.1:5328/faceage', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -27,6 +27,7 @@ const Home = () => {
 
       if (response.ok) {
         const data = await response.json();
+        console.log(data);
         setResponseData(data);
       } else {
         console.error('Error uploading image');

@@ -2,3 +2,5 @@ numpy
 Flask
 flask-cors
 pillow
+tensorflow
+matplotlib

@@ -6,7 +6,7 @@ import Webcam from 'react-webcam';
 const Home = () => {
   const webcamRef = useRef<any>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [responseData, setResponseData] = useState<{ image: string, message: string } | null>(null);
+  const [responseData, setResponseData] = useState<{ image: string, message: string, predicted_age: string} | null>(null);
 
   const captureImage = () => {
     const imageSrc = webcamRef.current?.getScreenshot();
@@ -62,6 +62,7 @@ const Home = () => {
           <h2 className="text-xl font-bold mb-2">Processed Image</h2>
           <img src={responseData.image} alt="Processed" className="max-w-md rounded-lg" />
           <p className="mt-2">{responseData.message}</p>
+          <p className="mt-2">あなたは{responseData.predicted_age}代です</p>
         </div>
       )}
     </div>

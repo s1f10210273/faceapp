@@ -11,6 +11,10 @@ import traceback
 app = Flask(__name__)
 CORS(app)
 
+@app.route("/api/python")
+def hello_world():
+    return "<p>Hello, World!</p>"
+
 # 事前に学習した年齢予測モデルの読み込み
 model = load_model('api/age_model_0716_2.h5')
 
@@ -72,7 +76,7 @@ def extract_faces(image, padding=100):
 
     return face_list
 
-@app.route('/faceage', methods=['POST'])
+@app.route('/api/faceage', methods=['POST'])
 def upload_image():
     try:
         if request.content_type != 'application/json':

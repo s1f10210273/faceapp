@@ -4,15 +4,16 @@ import React, { useState } from 'react';
 import TakePicture from './components/TakePicture';
 
 export default function Home() {
-  const [imageSrc, setImageSrc] = useState<string>('');
-  const [responseData, setResponseData] = useState<{ image: string, message: string, predicted_age: string} | null>(null);
+  const [camOn, setCamOn] = useState<boolean>(true);
+  const [responseData, setResponseData] = useState<{ image: string, message: string, predicted_age: number} | null>(null);
 
   const handleCaptureImage = (capturedImageSrc: string) => {
-    setImageSrc(capturedImageSrc);
+    setCamOn(false);
+    sendImage(capturedImageSrc);
   };
 
-  const sendImage = async () => {
-    if (imageSrc) {
+  const sendImage = async (imageSrc: string) => {
+    try {
       const response = await fetch('http://127.0.0.1:5328/faceage', {
         method: 'POST',
         headers: {
@@ -28,30 +29,19 @@ export default function Home() {
       } else {
         console.error('Error uploading image');
       }
+    } catch (error) {
+      console.error('Error uploading image', error);
     }
   };
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4">Webcam Capture</h1>
-      <div className="flex space-x-4 mb-4">
-        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" onClick={sendImage}>Send Image</button>
-          </div>
-      <div>
-
+    {camOn ? (
       <TakePicture onCapture={handleCaptureImage} />
-    </div>
-      {imageSrc && (
-        <div className="flex flex-col items-center mt-4">
-          <h2 className="text-xl font-bold mb-2">Captured Image</h2>
-          <img src={imageSrc} alt="Captured" className="max-w-md rounded-lg" />
-        </div>
-      )}
+    ): null}
       {responseData && (
         <div className="flex flex-col items-center mt-4">
-          <h2 className="text-xl font-bold mb-2">Processed Image</h2>
           <img src={responseData.image} alt="Processed" className="max-w-md rounded-lg" />
-          <p className="mt-2">{responseData.message}</p>
           <p className="mt-2">あなたは{responseData.predicted_age}代です</p>
         </div>
       )}

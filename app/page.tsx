@@ -2,17 +2,14 @@
 
 import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
+import TakePicture from './components/TakePicture';
 
-const Home = () => {
-  const webcamRef = useRef<any>(null);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
+export default function Home() {
+  const [imageSrc, setImageSrc] = useState<string>('');
   const [responseData, setResponseData] = useState<{ image: string, message: string, predicted_age: string} | null>(null);
 
-  const captureImage = () => {
-    const imageSrc = webcamRef.current?.getScreenshot();
-    if (imageSrc) {
-      setImageSrc(imageSrc);
-    }
+  const handleCaptureImage = (capturedImageSrc: string) => {
+    setImageSrc(capturedImageSrc);
   };
 
   const sendImage = async () => {
@@ -39,18 +36,11 @@ const Home = () => {
     <div className="max-w-3xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-4">Webcam Capture</h1>
       <div className="flex space-x-4 mb-4">
-        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" onClick={captureImage}>Capture Image</button>
         <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" onClick={sendImage}>Send Image</button>
       </div>
-      <div className="rounded-lg">
-        <Webcam
-          audio={false}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          width={640}
-          height={480}
-        />
-      </div>
+      <div>
+      <TakePicture onCapture={handleCaptureImage} />
+    </div>
       {imageSrc && (
         <div className="flex flex-col items-center mt-4">
           <h2 className="text-xl font-bold mb-2">Captured Image</h2>
@@ -68,5 +58,3 @@ const Home = () => {
     </div>
   );
 };
-
-export default Home;

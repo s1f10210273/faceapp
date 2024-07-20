@@ -1,9 +1,11 @@
 "use client"
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import TakePicture from './components/TakePicture';
 
 export default function Home() {
+  const router = useRouter();
   const [camOn, setCamOn] = useState<boolean>(true);
   const [responseData, setResponseData] = useState<{ image: string, message: string, predicted_age: number} | null>(null);
 
@@ -26,6 +28,12 @@ export default function Home() {
         const data = await response.json();
         console.log(data);
         setResponseData(data);
+        if (data.predicted_age > 60) {
+          router.push('/over60');
+        }
+        else {
+          router.push('/young');
+        }
       } else {
         console.error('Error uploading image');
       }

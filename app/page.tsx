@@ -1,7 +1,6 @@
 "use client"
 
-import React, { useRef, useState } from 'react';
-import Webcam from 'react-webcam';
+import React, { useState } from 'react';
 import TakePicture from './components/TakePicture';
 
 export default function Home() {
@@ -37,8 +36,9 @@ export default function Home() {
       <h1 className="text-3xl font-bold mb-4">Webcam Capture</h1>
       <div className="flex space-x-4 mb-4">
         <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" onClick={sendImage}>Send Image</button>
-      </div>
+          </div>
       <div>
+
       <TakePicture onCapture={handleCaptureImage} />
     </div>
       {imageSrc && (

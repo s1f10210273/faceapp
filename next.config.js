@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
+  trailingSlash: true,
   rewrites: async () => {
     return [
       {
@@ -10,8 +11,8 @@ const nextConfig = {
             ? 'http://127.0.0.1:5328/api/:path*'
             : '/api/',
       },
-    ]
+    ];
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

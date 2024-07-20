@@ -2,14 +2,15 @@
   "name": "next-flask",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "flask-dev": "FLASK_DEBUG=1 pip3 install -r requirements.txt && python3 -m flask --app api/index run -p 5328",
-    "next-dev": "next dev",
-    "dev": "concurrently \"pnpm run next-dev\" \"pnpm run flask-dev\"",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
+"scripts": {
+  "flask-dev": "FLASK_DEBUG=1 pip3 install -r requirements.txt && python3 -m flask --app api/index run -p 5328",
+  "next-dev": "next dev",
+  "dev": "concurrently \"pnpm run next-dev\" \"pnpm run flask-dev\"",
+  "build": "next build && next export",
+  "start": "next start",
+  "lint": "next lint"
+}
+,
   "dependencies": {
     "@types/node": "^20.1.4",
     "@types/react": "^18.2.6",
@@ -17,7 +18,7 @@
     "autoprefixer": "^10.4.14",
     "concurrently": "^8.0.1",
     "eslint-config-next": "^13.4.2",
-    "next": "^13.4.3",
+    "next": "^14.2.5",
     "postcss": "^8.4.23",
     "react": "^18.2.0",
     "react-cam": "^1.1.11",
@@ -28,10 +29,11 @@
   },
   "devDependencies": {
     "@eslint/compat": "^1.1.1",
-    "@eslint/js": "^9.7.0",
-    "eslint": "^9.7.0",
+    "@eslint/js": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^7.16.1",
+    "@typescript-eslint/parser": "^7.16.1",
+    "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.34.4",
-    "globals": "^15.8.0",
-    "typescript-eslint": "^7.16.1"
+    "globals": "^15.8.0"
   }
 }

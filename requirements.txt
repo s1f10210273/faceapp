@@ -3,4 +3,4 @@ Flask-Cors
 matplotlib
 numpy<=1.24.3
 Pillow
-tensorflow==2.13.1
+tensorflow==2.13.0

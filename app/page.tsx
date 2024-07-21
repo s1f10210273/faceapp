@@ -15,7 +15,7 @@ export default function Home() {
   const handleCaptureImage = async (capturedImageSrc: string) => {
     setCamOn(false);
     setLoading(true);
-    sendImage(capturedImageSrc);
+    await sendImage(capturedImageSrc);
   };
 
   const sendImage = async (imageSrc: string) => {
@@ -31,11 +31,15 @@ export default function Home() {
       if (response.ok) {
         const data = await response.json();
         setResponseData(data);
-        if (data.predicted_age > 60) {
-          router.push('/over60');
-        } else {
-          router.push('/young');
-        }
+
+        setTimeout(() => {
+          if (data.predicted_age > 60) {
+            router.push('/over60');
+          } else {
+            router.push('/young');
+          }
+        }, 3000);
+
       } else {
         throw new Error('Failed to fetch');
       }

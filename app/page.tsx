@@ -1,16 +1,20 @@
-"use client"
+"use client";
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import TakePicture from './components/TakePicture';
+import { Box, Text, Image, Spinner, Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
 
 export default function Home() {
   const router = useRouter();
   const [camOn, setCamOn] = useState<boolean>(true);
-  const [responseData, setResponseData] = useState<{ image: string, message: string, predicted_age: number} | null>(null);
+  const [responseData, setResponseData] = useState<{ image: string; message: string; predicted_age: number } | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleCaptureImage = (capturedImageSrc: string) => {
+  const handleCaptureImage = async (capturedImageSrc: string) => {
     setCamOn(false);
+    setLoading(true);
     sendImage(capturedImageSrc);
   };
 
@@ -26,33 +30,47 @@ export default function Home() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         setResponseData(data);
         if (data.predicted_age > 60) {
           router.push('/over60');
-        }
-        else {
+        } else {
           router.push('/young');
         }
       } else {
-        console.error('Error uploading image');
+        throw new Error('Failed to fetch');
       }
     } catch (error) {
       console.error('Error uploading image', error);
+      setError('画像のアップロード中にエラーが発生しました。');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-    {camOn ? (
-      <TakePicture onCapture={handleCaptureImage} />
-    ): null}
-      {responseData && (
-        <div className="flex flex-col items-center mt-4">
-          <img src={responseData.image} alt="Processed" className="max-w-md rounded-lg" />
-          <p className="mt-2">あなたは{responseData.predicted_age}代です</p>
-        </div>
+    <Box minH="100vh" bg="blue.50" p={6}>
+      {camOn ? (
+        <TakePicture onCapture={handleCaptureImage} />
+      ) : null}
+
+      {error && (
+        <Alert status="error" mt={4}>
+          <AlertIcon />
+          <Box>
+            <AlertTitle>エラー</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Box>
+        </Alert>
       )}
-    </div>
+
+      {responseData && !loading && (
+        <Box textAlign="center" mt={4}>
+          <Image src={responseData.image} alt="Processed" maxW="md" mx="auto" borderRadius="lg" />
+          <Text mt={2} fontSize="lg">
+            あなたは{responseData.predicted_age}代です
+          </Text>
+        </Box>
+      )}
+    </Box>
   );
-};
+}

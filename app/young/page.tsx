@@ -15,9 +15,9 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { id: 1, name: 'ハンバーガー', description: 'ジューシーなビーフパティのハンバーガー', price: 800, image: 'https://placehold.jp/300x300.png' },
-  { id: 2, name: 'フライドポテト', description: 'サクサクのフライドポテト', price: 400, image: 'https://placehold.jp/300x300.png' },
-  { id: 3, name: 'シーザーサラダ', description: '新鮮なレタスとクリーミーなドレッシング', price: 600, image: 'https://placehold.jp/300x300.png' },
+  { id: 1, name: 'ハンバーガー', description: 'ジューシーなビーフパティのハンバーガー', price: 800, image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgujVNYlDUUQ7Lp8k9ahcr6gzPjDs0h_8QpLJ4MfvLv54yPzr77jxo-AsL1Da3j673fOLWmk29VUB8Z7aFn1pb0FEdoBv8HDDNj_tx3J4JPjvL7okazprqSeg9miTJdwvlKwmhv-0EPwM6r/s400/food_hamburger.png' },
+  { id: 2, name: 'フライドポテト', description: 'サクサクのフライドポテト', price: 400, image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhZTQY6nHBE5zNXX8GxOUJOnZKSq6rib90CGxczSZK0N6mcacSC_-24KJbIIbDBdR6-hWWw3m8EhKKAj1HNrikaVeSXuoPAafwmwJchURjb5ym4aylJN6Ew4qbuJDnHvfGKB4k5p9wi5-LZ/s400/food_frenchfry.png' },
+  { id: 3, name: 'シーザーサラダ', description: '新鮮なレタスとクリーミーなドレッシング', price: 600, image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj6IhHRwn9JqoA5hcmpLBYTP8d6XBhRT0vXIj8opFaL5dBPWYCOUrieopcLU36xxo9hBZBQrgl_KaHVOr8R08aCMA6OT3Qk3KfT7oNHFgn0-9CuCVjZEz9S6aXzpci6raJdlDWljnezBelZ/s400/salad_reisyabu.png' },
 ]
 
 const MotionBox = motion(Box)

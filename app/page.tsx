@@ -41,7 +41,7 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error uploading image', error);
-      setError('画像のアップロード中にエラーが発生しました。');
+      setResponseData({ image: imageSrc, message: 'Error occurred', predicted_age: 0 });
     } finally {
       setLoading(false);
       onOpen();
@@ -50,11 +50,13 @@ export default function Home() {
 
   const handleAgeSubmit = () => {
     onClose();
-    if (manualAge && manualAge > 60) {
-      router.push('/over60');
-    } else {
-      router.push('/young');
-    }
+    setTimeout(() => {
+      if (manualAge && manualAge > 60) {
+        router.push('/over60');
+      } else {
+        router.push('/young');
+      }
+    }, 3000); // 3秒後にページ遷移
   };
 
   return (

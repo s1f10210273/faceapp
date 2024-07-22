@@ -1,6 +1,6 @@
 "use client"
 
-import { Box, Text, Button, VStack, ChakraProvider, Heading, Stack } from '@chakra-ui/react'
+import { Box, Link, Text, Button, VStack, ChakraProvider, Heading, Stack } from '@chakra-ui/react'
 import { useState } from 'react'
 
 interface MenuItem {
@@ -39,9 +39,11 @@ export default function Checkout() {
           shadow="lg"
         >
             <Text fontSize="xl" fontWeight="bold" >合計 ¥{totalPrice}</Text>
+            <Link href="/">
           <Button colorScheme="blue" w="full" mt={4} onClick={handleCheckout}>
             注文を確定する
           </Button>
+          </Link>
         </VStack>
       </Box>
     </ChakraProvider>
